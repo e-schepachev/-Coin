@@ -23,32 +23,6 @@
 	<form action='send.php' method='POST'>
 	<table class="table">
 		<tr>
-			<td>From account:</td>
-			<td>
-				<?php 
-					$addr = $nmc->listaccounts();
-					// get account with max balance
-					$maxBalance = -1;
-					$maxAccount = null;
-					foreach ($addr as $account => $balance)
-					{
-						if ($balance > $maxBalance)
-						{
-							$maxBalance = $balance;
-							$maxAccount = $account;
-						}
-					}
-
-					echo "<select class=\"form-control\" name='account'>";
-					foreach ($addr as $account => $balance)
-					{
-						echo "<option value='{$account}' ".($account === $maxAccount ? " selected='selected' " : "").">{$account} ({$balance})</option>";
-					}
-					echo "</select>";
-				?>
-			</td>
-		</tr>
-		<tr>
 			<td>To address:</td>
 			<td>
 				<?php 
@@ -147,7 +121,7 @@
     		</tr>
     	</thead>
     	<tbody>
-    		 <?php $info = $nmc->getinfo(); ?>
+    		 <?php $info = $nmc->getwalletinfo(); ?>
 				<?php
 					foreach ($info as $key => $val){
 						if ($val != "")

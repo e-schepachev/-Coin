@@ -9,7 +9,6 @@
 
 	include("header.php");
 
-	$account = $_POST['account'];
 	$sendaddr = ($_POST['addressbook'] != "---") ? $_POST['addressbook'] : $_POST['address'];
 	$sendamt = $_POST['amount'];
 	settype($sendamt, 'double');
@@ -20,8 +19,8 @@
 		if ($wallet_encrypted)
 			$nmc->walletpassphrase($_POST['walletpassphrase'], 1);
 			try {
-				$nmc->sendfrom($account, $sendaddr, $sendamt);
-				echo "<p class='bg-success'>Sending <b>{$sendamt}</b> from <b>{$account}</b> to <b>{$sendaddr}</b></p>";
+				$nmc->sendtoaddress($sendaddr, $sendamt);
+				echo "<p class='bg-success'>Sending <b>{$sendamt}</b> to <b>{$sendaddr}</b></p>";
 			} catch(Exception $e) {
 				echo "<p class='bg-danger'><b>Error:</b> Something went wrong... have you got enough to send that amount of money? Message returned from server: <br> {$e}</p>";
 			}   

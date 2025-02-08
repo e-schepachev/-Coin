@@ -36,7 +36,7 @@
 	$nmc = new jsonRPCClient("{$nmcu['protocol']}://{$nmcu['user']}:{$nmcu['pass']}@{$nmcu['host']}:{$nmcu['port']}", true);
 
 	try {
-		$nmcinfo = $nmc->getinfo();
+		$nmcinfo = $nmc->getwalletinfo();
 	} catch(exception $e) {
 		die("Failed to retrieve data from the daemon, please check your configuration, and ensure that your coin daemon is running:<br>  {$e}");
 	}
