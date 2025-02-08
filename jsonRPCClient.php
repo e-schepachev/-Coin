@@ -140,11 +140,6 @@ class jsonRPCClient {
 			throw new Exception('Unable to connect to '.$this->url);
 		}
 		
-		// debug output
-		if ($this->debug) {
-			echo nl2br($debug);
-		}
-		
 		// final checks and return
 		if (!$this->notification) {
 			// check

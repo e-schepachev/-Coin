@@ -63,30 +63,71 @@ if (isset($_POST['AddrName']) && isset($_POST['myAddress']))
 }
 
 
-$list = $nmc->listaddressgroupings();
+$labels = $nmc->listlabels();
+$addresses_balances = array();
 // $addrkeys = array_keys($addr);
-echo "<div class='content'>
-<h2>Addresses</h2>";
+echo "<h2>Addresses</h2>";
+echo "<div class='content'>";
 echo "<form action='address.php' method='POST'>
 <div class=\"row\">
-<div class=\"col-sm-8\">
-<table class='table-striped table-bordered table-condensed table'>
-	<thead><tr><th >Address </th><th>Amount</th><th>Label</th></tr></thead>";
-		foreach ($list as $group)
-			foreach ($group as $balance)
+<div class=\"col-sm-8\">";
+
+		foreach ($labels as $label)
+		{
+			$addressesOnLabel = $nmc->getaddressesbylabel($label);
+			foreach ($addressesOnLabel as $address => $purpose)
 			{
-				$address = $balance[0];
-				$amount = $balance[1];
-
-				$label = "";
-				if (count($balance) > 2 && $balance[2] !== "")
-					$label = $balance[2];
-
-				echo "<tr><td>". $address ."</td><td>". number_format($amount, 8) ."</td><td>".$label."</td></tr>";
+				$addresses_balances[$address] = array('amount' => 0, 'label' => $label, 'group' => -1);
 			}
+		}
 
-echo "</table>
-</div>
+		$groups = $nmc->listaddressgroupings();
+
+		$groupId = 0;
+		foreach ($groups as $group)
+		{
+			foreach ($group as $info)
+			{	
+				$address = $info[0];
+
+				if (in_array($address, array_keys($addresses_balances)))
+					$addresses_balances[$address]['group'] = $groupId;
+				else
+					$addresses_balances[$address] = array('amount' => 0, 'label' => null, 'group' => $groupId);
+
+			}
+			$groupId++;
+		}
+
+		$unspent = $nmc->listunspent();
+
+		foreach ($unspent as $address_unspent)
+		{
+			$addresses_balances[$address_unspent['address']]['amount'] = $address_unspent['amount'];
+		}
+
+		for ($i = -1 ; $i < $groupId; ++$i)
+		{
+			if ($i < 0)
+				echo 	"<h3>Ungrouped</h3>";
+			else
+				echo 	"<h3>Group ".$i."</h3>";
+
+			echo 	"<table class='table-striped table-bordered table-condensed table'>
+					<thead><tr><th>Address</th><th>Amount</th><th>Label</th></tr></thead>";
+
+			foreach ($addresses_balances as $address=>$info)
+			{
+				if ($info['group'] == $i)
+				{
+					$labelCell = $info['label'] === null ? "<td><em>unset<em></td>" : "<td>".$info['label']."</td>";
+					echo "<tr><td>". $address ."</td><td>". number_format($info['amount'], 8) ."</td>".$labelCell."</tr>";
+				}
+			}
+			echo "</table>";
+		}
+
+echo "</div>
 <div class=\"col-sm-2\">
 	<input class='btn btn-default form-control' name='addaddr' type='submit' value='Add address' />
 </div>
