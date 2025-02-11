@@ -12,11 +12,11 @@
 
 	$wallets = array();
 
-	$wallets['wallet'] = array(
-		"user" => "bitcoinrpc",  
-		"pass" => "password",      
-		"host" => "hostname",     
-		"port" => 8332,
+	$wallets['testwallet'] = array(
+		"user" => "testuser",  
+		"pass" => "testpass",      
+		"host" => "172.20.0.3",     
+		"port" => 18443,
 		"protocol" => "http"
 	);
 ?>
